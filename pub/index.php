@@ -24,6 +24,12 @@ function route($path) {
 			),
 			'players' => array(
 				'callback' => array('BAMCore_Player', 'loadMultiple'),
+				'args' => array(
+					'ids' => array(
+						'optional' => true,
+						'explode' => ',',
+					),
+				),
 			),
 		);
 	}
