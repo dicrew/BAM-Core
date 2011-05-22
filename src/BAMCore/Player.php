@@ -3,7 +3,7 @@
 class BAMCore_Player extends BAMCore_Object {
 
 	protected $arrayFields = array(
-		'firstName', 'lastName'
+		'id', 'firstName', 'lastName'
 	);
 
 	public static function loadMultiple($ids = array()) {
@@ -11,8 +11,11 @@ class BAMCore_Player extends BAMCore_Object {
 		$players = array();
 		for ($i = 0; $i < 3; $i++) {
 			$player = new self();
-			$player->setFirstName("Foo $i");
-			$player->setLastName("Bar $i");
+			$player->setMultiple(array(
+				'id' => $i,
+				'firstName' => "Foo $i",
+				'lastName' => "Bar $i",
+			));
 			$players[] = $player;
 		}
 		if (empty($ids)) {
