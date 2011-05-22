@@ -78,7 +78,7 @@ function run() {
 function http_status($code, $message) {
 	$proto = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
 	header("$proto $code $message");
-	header('Content-Type: application/json');
+	header('Content-Type: application/json; charset=UTF-8');
 }
 
 function ping($message = null) {
