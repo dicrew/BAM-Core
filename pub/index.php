@@ -16,6 +16,15 @@ function route($path) {
 					),
 				),
 			),
+			'player' => array(
+				'callback' => array('BAMCore_Player', 'load'),
+				'args' => array(
+					'id' => array(),
+				),
+			),
+			'players' => array(
+				'callback' => array('BAMCore_Player', 'loadMultiple'),
+			),
 		);
 	}
 	if (isset($routes[$path])) {
