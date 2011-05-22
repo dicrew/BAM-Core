@@ -20,8 +20,7 @@ function route($path) {
 }
 
 function request_path() {
-	$path = trim($_SERVER['REQUEST_URI'], '/');
-	return $path;
+	return trim(preg_replace('/\?.*$/', '', $_SERVER['REQUEST_URI']), '/');
 }
 
 function do_action() {
