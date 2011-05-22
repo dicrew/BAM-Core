@@ -1,3 +1,6 @@
 <?php
 
-// Will contain the autoloader and stuff.
+function __autoload($class) {
+	$file = strtr($class, '_./', '/') . '.php';
+	require_once $file;
+}
