@@ -24,7 +24,7 @@ class BAMCore_Player extends BAMCore_Object {
 			$results = array();
 			foreach ($ids as $id) {
 				if (isset($players[$id])) {
-					$results[$id] = $players[$id];
+					$results[] = $players[$id];
 				}
 			}
 			return $results;
