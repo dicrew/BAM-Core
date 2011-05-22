@@ -47,7 +47,11 @@ function build_params($def) {
 			}
 		} else {
 			// TODO: validation
-			$result[] = $_GET[$arg];
+			$value = $_GET[$arg];
+			if (isset($cfg['explode'])) {
+				$value = explode($cfg['explode'], $value);
+			}
+			$result[] = $value;
 		}
 	}
 	return $result;
