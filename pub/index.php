@@ -10,6 +10,11 @@ function route($path) {
 		$routes = array(
 			'ping' => array(
 				'callback' => 'ping',
+				'args' => array(
+					'message' => array(
+						'optional' => true,
+					),
+				),
 			),
 		);
 	}
@@ -76,10 +81,14 @@ function http_status($code, $message) {
 	header('Content-Type: application/json');
 }
 
-function ping() {
-	return array(
+function ping($message = null) {
+	$result = array(
 		'timestamp' => time(),
 	);
+	if ($message !== null) {
+		$result['message'] = $message;
+	}
+	return $result;
 }
 
 run();
