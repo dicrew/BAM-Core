@@ -56,8 +56,15 @@ function do_action() {
 			return array('error' => array('code' => 400, 'message' => $e->getMessage()));
 		}
 		$result = call_user_func_array($definition['callback'], $params);
-		if (!is_array($result)) {
+		if ($result instanceof BAMCore_Object) {
+			$result = $result->toArray();
+		} elseif (!is_array($result)) {
 			return array('error' => array('code' => 500, 'message' => 'No array returned'));
+		}
+		foreach ($result as $k => $v) {
+			if ($v instanceof BAMCore_Object) {
+				$result[$k] = $v->toArray();
+			}
 		}
 		return $result;
 	}
