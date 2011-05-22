@@ -6,28 +6,46 @@ class BAMCore_Object {
 
 	protected $arrayFields = array();
 
-	protected function get($key, $default = null) {
-		$results = $this->getMultiple(array($key));
-		return count($results) ? $results[$key] : $default;
-	}
-
-	protected function getMultiple($data) {
+	protected function get() {
+		$args = func_get_args();
+		$count = count($args);
+		if ($count != 1 && $count != 2) {
+			throw new Exception('invalid number of arguments');
+		}
+		$first = !is_array($args[0]);
+		if ($count == 2) {
+			if (is_array($args[0])) {
+				throw new Exception('key may not be an array');
+			}
+			if (!isset($this->data[$args[0]])) {
+				return $args[1];
+			}
+			$args = array(array($args[0]));
+		}
 		$results = array();
-		foreach($data as $key) {
+		foreach ($args[0] as $key) {
 			if (isset($this->data[$key])) {
 				$results[$key] = $this->data[$key];
 			}
 		}
-		return $results;
+		return $first ? $results[0] : $results;
 	}
 
-	protected function set($key, $value) {
-		$this->setMultiple(array($key => $value));
-	}
-
-	protected function setMultiple($data) {
-		foreach($data as $key => $value) {
-			$this->data[$key] = $value;
+	protected function set() {
+		$args = func_get_args();
+		$count = count($args);
+		if ($count == 2) {
+			if (is_array($args[0])) {
+				throw new Exception('key may not be an array');
+			}
+			$args = array(array($args[0], $args[1]));
+		}
+		if ($count == 1) {
+			foreach($args[0] as $key => $value) {
+				$this->data[$key] = $value;
+			}
+		} else {
+			throw new Exception('wrong number of arguments');
 		}
 	}
 
@@ -48,7 +66,7 @@ class BAMCore_Object {
 	}
 
 	public function toArray($recursive = true) {
-		$result = $this->getMultiple($this->arrayFields);
+		$result = $this->get($this->arrayFields);
 		if ($recursive) {
 			foreach ($result as $k => $v) {
 				if ($v instanceof BAMCore_Object) {

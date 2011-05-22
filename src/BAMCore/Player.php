@@ -11,7 +11,7 @@ class BAMCore_Player extends BAMCore_Object {
 		$players = array();
 		for ($i = 0; $i < 3; $i++) {
 			$player = new self();
-			$player->setMultiple(array(
+			$player->set(array(
 				'id' => $i,
 				'firstName' => "Foo $i",
 				'lastName' => "Bar $i",
