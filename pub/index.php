@@ -40,7 +40,18 @@ function route($path) {
 }
 
 function request_path() {
-	return trim(preg_replace('/\?.*$/', '', $_SERVER['REQUEST_URI']), '/');
+	$me = '/index.php';
+	if (isset($_SERVER['PHP_SELF'])) {
+		$me = $_SERVER['PHP_SELF'];
+	} elseif (isset($_SERVER['SCRIPT_NAME'])) {
+		$me = $_SERVER['SCRIPT_NAME'];
+	}
+	$basepath = dirname($me);
+	$requri = $_SERVER['REQUEST_URI'];
+	if (substr($requri, 0, strlen($basepath)) == $basepath) {
+		$requri = substr($requri, strlen($basepath));
+	}
+	return trim(preg_replace('/\?.*$/', '', $requri), '/');
 }
 
 function build_params($def) {
