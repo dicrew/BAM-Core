@@ -19,7 +19,7 @@ class BAMCore_Player extends BAMCore_Object {
 			$players[] = $player;
 		}
 		if (empty($ids)) {
-			return $players;			
+			return $players;
 		} else {
 			$results = array();
 			foreach ($ids as $id) {
@@ -30,9 +30,9 @@ class BAMCore_Player extends BAMCore_Object {
 			return $results;
 		}
 	}
-	
+
 	public static function load($id) {
- 		$players = self::loadMultiple(array($id));
+		$players = self::loadMultiple(array($id));
 		return $players ? reset($players) : false;
 	}
 
