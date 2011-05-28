@@ -94,6 +94,8 @@ function auth($def) {
 		throw new Exception("No replay.");
 	}
 	$hash = isset($args['hash']) ? $args['hash'] : '';
+	// jQuery uses the underscore parameter to avoid client side caching
+	unset($args['_']);
 	unset($args['hash']);
 	ksort($args);
 	$querystring = http_build_query($args) . '#' . sharedSecret($args['user']);
