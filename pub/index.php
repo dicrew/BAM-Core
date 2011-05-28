@@ -4,6 +4,8 @@
 
 require_once '../src/BAMCore.php';
 
+define('TIMESTAMP_DIFF', 3600);
+
 function route($path) {
 	static $routes = null;
 	if ($routes === null) {
@@ -74,17 +76,61 @@ function build_params($def) {
 	return $result;
 }
 
+function auth($def) {
+	// No auth required.
+	if (empty($def['auth']) && empty($_GET['user'])) {
+		return true;
+	}
+	$args = $_GET;
+	$time = time();
+	if (empty($args['timestamp']) || empty($args['salt']) || empty($args['hash'])) {
+		throw new Exception("Missing correct auth.");
+	}
+	if ($args['timestamp'] < $time - TIMESTAMP_DIFF || $args['timestamp'] > $time + TIMESTAMP_DIFF) {
+		throw new Exception("Invalid timestamp.");
+	}
+	// TODO: check for existing timestamps and salts
+	if (empty($args['salt'])) {
+		throw new Exception("No replay.");
+	}
+	$hash = isset($args['hash']) ? $args['hash'] : '';
+	unset($args['hash']);
+	ksort($args);
+	$querystring = http_build_query($args) . '#' . sharedSecret($args['user']);
+	if ($hash != hash('sha256', $querystring)) {
+		throw new Exception("Invalid hash.");
+	}
+}
+
+function sharedSecret($user) {
+	switch ($user) {
+		case 'asdfxxx':
+			return '';
+		case 'asdf':
+			return 'foobar';
+		case 'foo':
+			return '1234';
+		case 'bar':
+			return 'abc';
+	}
+	throw new Exception("Unknown user.");
+}
+
 function do_action() {
 	$definition = route(request_path());
 	if ($definition !== false) {
-		// TODO: Check if callback exists at all before calling.
-		// TODO: Pass actual parameters, if any.
+		try {
+			auth($definition);
+		} catch (Exception $e) {
+			return array('error' => array('code' => 403, 'message' => $e->getMessage()));
+		}
 		$params = array();
 		try {
 			$params = build_params($definition);
 		} catch (Exception $e) {
 			return array('error' => array('code' => 400, 'message' => $e->getMessage()));
 		}
+		// TODO: Check if callback exists at all before calling.
 		$result = call_user_func_array($definition['callback'], $params);
 		if ($result instanceof BAMCore_Object) {
 			$result = $result->toArray();
